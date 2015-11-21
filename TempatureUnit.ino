@@ -19,7 +19,6 @@ LiquidCrystal_I2C  lcd(I2CLOCATION,2,1,0,4,5,6,7);
 
 int buttonState = 0;
 long lastTemperatureCheck = 0;
-long lastButtonCheck = 0;
 long lastButtonState = 0;
 
 void setup(void)
@@ -42,7 +41,6 @@ void setup(void)
   pinMode(BUTTONPIN, INPUT);
 
   lastTemperatureCheck = millis();
-  lastButtonCheck = millis();
 }
 
 void handleTemperature() {
@@ -85,16 +83,17 @@ void handleTemperature() {
 }
 
 void handleButton() {
-  int timeBetween = millis() - lastButtonCheck;
   buttonState = digitalRead(BUTTONPIN);
   
   if (buttonState != lastButtonState) {
     lastButtonState = buttonState;
     
     if (buttonState == HIGH) {
+      lcd.display();
       lcd.setBacklight(HIGH);
       Serial.println("Button pressed");
     } else {
+      lcd.noDisplay();
       lcd.setBacklight(LOW);
       Serial.println("Button unpressed");
     }
@@ -106,5 +105,5 @@ void loop(void)
   handleTemperature();
   handleButton();
   
-  delay(100);
+  delay(200);
 }
